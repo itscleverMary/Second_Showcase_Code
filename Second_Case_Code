@@ -1,0 +1,97 @@
+--This code lets players move either left or right when they tap the A and D keys
+
+userInputService = game:GetService("UserInputService")
+local tweenService = game:GetService("TweenService")
+local player = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local character = player.CharacterAdded:wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local currentPositionX = game.Workspace:WaitForChild(player.Name):WaitForChild("HumanoidRootPart").CFrame.X
+local tweenLeftOne = nil
+local tweenLeftTwo = nil
+local tweenRightOne = nil
+local tweenRightTwo = nil
+
+RunService.Heartbeat:Connect(function()
+	for i, v in pairs(game.Workspace:GetChildren()) do
+		if v.ClassName == "Model" then
+			if v.Name == player.Character.Name then
+				local character = game.Workspace:WaitForChild(v.Name)
+				local currentPosition = character.HumanoidRootPart.CFrame
+				currentPositionX = character.HumanoidRootPart.CFrame.X
+				local currentPositionY = character.HumanoidRootPart.CFrame.Y
+				local currentPositionZ = character.HumanoidRootPart.CFrame.Z
+				local humanoidRootPartCFrame = character.HumanoidRootPart.CFrame
+				local doMathLeftOne = CFrame.new(-42.004, currentPositionY, currentPositionZ)
+				local doMathLeftTwo = CFrame.new(-52.004, currentPositionY, currentPositionZ)
+				local doMathRightOne = CFrame.new(-42.004, currentPositionY, currentPositionZ)
+				local doMathRightTwo = CFrame.new(-32.004, currentPositionY, currentPositionZ)
+				
+				local goalLeftOne = {
+					CFrame = doMathLeftOne
+				}
+				
+				local goalLeftTwo = {
+					CFrame = doMathLeftTwo
+				}
+				
+				local goalRightOne = {
+					CFrame = doMathRightOne
+				}
+				
+				local goalRightTwo = {
+					CFrame = doMathRightTwo
+				}
+				
+				local tweenInfo = TweenInfo.new(
+					0.1, --Time, you may need to change that
+					Enum.EasingStyle.Sine, --EasingStyle
+					Enum.EasingDirection.Out, --Easing Direction
+					0, -- Repeat count
+					false, --Reverse?
+					0 --Delay Time
+				)
+				
+				tweenLeftOne = tweenService:Create(humanoidRootPart, tweenInfo, goalLeftOne)
+				tweenLeftTwo = tweenService:Create(humanoidRootPart, tweenInfo, goalLeftTwo)
+				tweenRightOne = tweenService:Create(humanoidRootPart, tweenInfo,goalRightOne)
+				tweenRightTwo = tweenService:Create(humanoidRootPart, tweenInfo,goalRightTwo)
+			end
+		end
+	end
+end)
+
+userInputService.InputBegan:Connect(function(input, gameProccessedEvent)
+	if input.KeyCode == Enum.KeyCode.A then
+		print("A got pressed.")
+		currentPositionX = character.HumanoidRootPart.CFrame.X
+		print(currentPositionX)
+		if currentPositionX < -27.486 and currentPositionX > -36.117 then 
+			print("In first if statement")
+			humanoidRootPart.Anchored = true
+			print("before tween")
+			tweenLeftOne:Play()
+			print("after tween")
+			humanoidRootPart.Anchored = false
+			print("Success!")
+		elseif currentPositionX < -37.612 and currentPositionX > -46.069 then
+			print(character.HumanoidRootPart.CFrame)
+			tweenLeftTwo:Play()
+			wait(0.1)
+			print(character.HumanoidRootPart.CFrame)
+			print("Else if statement")
+		else
+			print("You've reached the limit.")
+		end
+	elseif input.KeyCode == Enum.KeyCode.D then
+		print("D got pressed.")
+		if currentPositionX > -56.033 and currentPositionX < -47.51 then
+			tweenRightOne:Play()
+		elseif currentPositionX < -37.577 and currentPositionX > -45.849 then
+			tweenRightTwo:Play()
+			print("Success!")
+		else
+			print("You've reached the limit.")
+		end
+	end
+end)
